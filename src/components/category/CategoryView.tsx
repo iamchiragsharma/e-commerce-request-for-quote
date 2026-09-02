@@ -38,15 +38,15 @@ export const CategoryView: React.FC<CategoryViewProps> = ({
     <div className="section-padding" style={{ background: 'var(--bg-page)' }}>
       <div className="container">
         {/* Category Header */}
-        <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem' }}>
+        <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--color-brand-accent)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+            <div style={{ fontSize: '0.76rem', color: 'var(--color-brand-accent)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.2rem' }}>
               Corporate Collection • {categoryProducts.length} Items Available
             </div>
-            <h1 style={{ fontSize: '2.1rem', fontWeight: 800, marginBottom: '0.4rem' }}>
+            <h1 style={{ fontSize: '1.9rem', fontWeight: 800, marginBottom: '0.3rem' }}>
               {category.name}
             </h1>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', maxWidth: '640px' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', maxWidth: '640px' }}>
               {category.description}
             </p>
           </div>
@@ -80,7 +80,7 @@ export const CategoryView: React.FC<CategoryViewProps> = ({
         </div>
 
         {/* GST Notification Note */}
-        <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '1.5rem', textAlign: 'right' }}>
+        <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', marginBottom: '1.25rem', textAlign: 'right' }}>
           * All prices displayed in AUD (ex. GST). Standard 10% GST calculated on quotation.
         </div>
 
@@ -88,12 +88,12 @@ export const CategoryView: React.FC<CategoryViewProps> = ({
         {filteredProducts.length === 0 ? (
           <div style={{
             background: 'white',
-            borderRadius: '14px',
-            padding: '3.5rem 2rem',
+            borderRadius: '12px',
+            padding: '3rem 1.5rem',
             textAlign: 'center',
             border: '1px solid var(--border-subtle)'
           }}>
-            <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>No products matching "{searchTerm}"</h3>
+            <h3 style={{ fontSize: '1.15rem', marginBottom: '0.5rem' }}>No products matching "{searchTerm}"</h3>
             <button className="btn btn-secondary btn-sm" onClick={() => setSearchTerm('')}>
               Clear Search Filter
             </button>
@@ -126,7 +126,7 @@ export const CategoryView: React.FC<CategoryViewProps> = ({
                     </h3>
                     <p className="product-tagline">{product.description}</p>
 
-                    <div className="product-pricing-box" style={{ marginBottom: '0.85rem' }}>
+                    <div className="product-pricing-box">
                       <div className="product-price-row">
                         <span className="tier-from-label">Regular Price</span>
                         <span className="price-unit">A${product.price}</span>

@@ -19,30 +19,30 @@ export const SimpleHome: React.FC<SimpleHomeProps> = ({ products, onNavigate, on
 
   return (
     <div>
-      {/* Clean Hero Banner with Australian Touch */}
-      <section className="hero-wrapper" style={{ padding: '3.5rem 0 3rem' }}>
+      {/* Clean Hero Banner */}
+      <section className="hero-wrapper">
         <div className="container" style={{ textAlign: 'center', maxWidth: '780px' }}>
-          <div className="hero-badge-pill" style={{ margin: '0 auto 1.25rem' }}>
+          <div className="hero-badge-pill" style={{ margin: '0 auto 1rem' }}>
             🇦🇺 Premium Corporate Gifting • Australia
           </div>
 
-          <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: 'white', marginBottom: '1rem', letterSpacing: '-0.02em', lineHeight: 1.2 }}>
-            Elevate Your Business Relationships with Distinguished Corporate Gifts
+          <h1 className="hero-main-title">
+            Distinguished Corporate Gifts for Australian Enterprises
           </h1>
 
-          <p style={{ color: '#94A3B8', fontSize: '1.05rem', marginBottom: '1.75rem', lineHeight: 1.55 }}>
-            Curated executive gifts and modern workplace tech essentials for Australian enterprises. Select your items, customize your quantities, and request a tailored quote.
+          <p className="hero-subtitle">
+            Curated executive gifts and workplace tech essentials with custom branding. Select products, customize quantities, and request an instant corporate quote.
           </p>
 
-          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '0.65rem', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button
-              className="btn btn-primary"
+              className="btn btn-primary btn-mobile-full"
               onClick={() => onNavigate('cat-executive')}
             >
               Explore Executive Gifts
             </button>
             <button
-              className="btn btn-secondary"
+              className="btn btn-secondary btn-mobile-full"
               onClick={() => onNavigate('cat-tech')}
             >
               Explore Employee Tech
@@ -91,53 +91,31 @@ export const SimpleHome: React.FC<SimpleHomeProps> = ({ products, onNavigate, on
       </div>
 
       {/* Two Category Quick Navigation Cards */}
-      <section style={{ padding: '2.5rem 0 1rem' }}>
+      <section style={{ padding: '2rem 0 0.5rem' }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.25rem' }}>
+          <div className="category-shortcuts-grid">
             <div
-              style={{
-                background: 'white',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: '14px',
-                padding: '1.5rem',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                boxShadow: 'var(--shadow-xs)',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}
+              className="category-shortcut-box"
               onClick={() => onNavigate('cat-executive')}
             >
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--color-brand-accent)', fontWeight: 700, textTransform: 'uppercase' }}>Collection 1</span>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: '0.2rem 0 0.4rem' }}>Executive Gifts</h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Luxury leather accessories, Barossa wine crates, pens & hampers</p>
+                <span style={{ fontSize: '0.72rem', color: 'var(--color-brand-accent)', fontWeight: 700, textTransform: 'uppercase' }}>Collection 1</span>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, margin: '0.15rem 0 0.35rem' }}>Executive Gifts</h3>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem' }}>Luxury leather accessories, Barossa wine crates & hampers</p>
               </div>
-              <button className="btn btn-secondary btn-sm" style={{ marginLeft: '1rem', flexShrink: 0 }}>View →</button>
+              <button className="btn btn-secondary btn-sm" style={{ marginLeft: '0.75rem', flexShrink: 0 }}>View →</button>
             </div>
 
             <div
-              style={{
-                background: 'white',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: '14px',
-                padding: '1.5rem',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                boxShadow: 'var(--shadow-xs)',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}
+              className="category-shortcut-box"
               onClick={() => onNavigate('cat-tech')}
             >
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--color-brand-accent)', fontWeight: 700, textTransform: 'uppercase' }}>Collection 2</span>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: '0.2rem 0 0.4rem' }}>Employee Tech</h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>ANC studio headphones, fast wireless chargers, USB hubs & accessories</p>
+                <span style={{ fontSize: '0.72rem', color: 'var(--color-brand-accent)', fontWeight: 700, textTransform: 'uppercase' }}>Collection 2</span>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, margin: '0.15rem 0 0.35rem' }}>Employee Tech</h3>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem' }}>ANC headphones, wireless chargers, USB hubs & accessories</p>
               </div>
-              <button className="btn btn-secondary btn-sm" style={{ marginLeft: '1rem', flexShrink: 0 }}>View →</button>
+              <button className="btn btn-secondary btn-sm" style={{ marginLeft: '0.75rem', flexShrink: 0 }}>View →</button>
             </div>
           </div>
         </div>
@@ -181,7 +159,7 @@ export const SimpleHome: React.FC<SimpleHomeProps> = ({ products, onNavigate, on
                     </h3>
                     <p className="product-tagline">{product.description}</p>
 
-                    <div className="product-pricing-box" style={{ marginBottom: '0.85rem' }}>
+                    <div className="product-pricing-box">
                       <div className="product-price-row">
                         <span className="tier-from-label">Regular Price</span>
                         <span className="price-unit">A${product.price}</span>
@@ -208,7 +186,7 @@ export const SimpleHome: React.FC<SimpleHomeProps> = ({ products, onNavigate, on
             })}
           </div>
 
-          <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+          <div style={{ textAlign: 'center', marginTop: '2rem' }}>
             <button
               className="btn btn-primary"
               onClick={() => onNavigate('cat-executive')}

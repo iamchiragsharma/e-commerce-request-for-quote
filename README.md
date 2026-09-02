@@ -1,34 +1,30 @@
 # ArtisanCorp Australia — Corporate Gifting & Quote Platform
 
-An Australian corporate gifting e-commerce platform built with **React 19**, **TypeScript**, **Vite**, and **Vanilla CSS**. Designed with an Australian business focus, AUD pricing (ex. GST), and an intuitive quotation workflow.
+An Australian corporate gifting e-commerce platform built with **React 19**, **TypeScript**, **Vite**, and **Vanilla CSS**. Designed with an Australian business focus, AUD pricing (ex. GST), full mobile responsiveness, and an intuitive quotation workflow.
 
 ---
 
-## 🇦🇺 Australian Business Touchpoints
+## 🇦🇺 Australian Business & Design Features
 
+- **Top Green Bar with Smooth Infinite Ticker**: Slow, continuous marquee ticker highlighting Australian ownership, express capital city dispatch, and toll-free helpline (`1300 782 438`).
+- **Mobile Navigation**:
+  - **Left**: Hamburger menu button (`☰`) opening a slide-in navigation drawer.
+  - **Middle**: Brand Logo (`ArtisanCorp AU`).
+  - **Right**: Simple Quote icon with dynamic badge counter.
+- **Desktop Navigation**: Classic clean layout with left logo, centered nav links, and right quote button.
 - **Pricing & Currency**: All items listed in Australian Dollars (`A$ / AUD`, ex GST). 10% Australian GST is calculated automatically upon quotation.
 - **Brand Identity**: **ArtisanCorp Australia** (ABN: 48 619 824 105) based in North Sydney, NSW.
 - **Australia-Wide Fulfillment**: Highlights express dispatch to Sydney, Melbourne, Brisbane, Perth, Adelaide, Hobart, Canberra, and Darwin.
-- **Australian Local Sourcing**: Features Barossa Valley wine & cheese crates, Tasmanian Leatherwood honey, Byron Bay roasted coffee, and 100% Australian Merino wool corporate blankets.
-- **Australian Corporate Inquiries**: Toll-free helpline `1300 782 438` and corporate inquiry support.
+- **Australian Local Range**: Barossa Valley wine & cheese crates, Tasmanian Leatherwood honey, Byron Bay roasted coffee, and 100% Australian Merino wool throws.
 
 ---
 
 ## 🧭 Navigation & Page Architecture
 
-- **Top Announcement Bar**: Displays Australian ownership, nationwide dispatch, and AUD currency notice.
-- **Header**:
-  - **Left**: Corporate Logo (`ArtisanCorp AU`)
-  - **Middle**:
-    - `Home`: Clean executive hero banner, Australian trust badges, and popular corporate gifts.
-    - `Executive Gifts`: Category 1 with 20 items (`EX-101` to `EX-120`).
-    - `Employee Tech`: Category 2 with 20 items (`TC-201` to `TC-220`).
-  - **Right**: Quote Icon + Quote Button displaying dynamic item badge counter.
-
 ### Core Pages
 
 1. **Homepage (`#home`)**:
-   - Executive intro banner with quick links to both corporate collections.
+   - Clean executive intro banner with quick links to both corporate collections.
    - Australian trust badges (Australian Owned, Fast Dispatch, Precision Branding, Carbon Neutral).
    - Curated corporate gift cards with image, SKU, category, regular price (AUD), and direct "+ Add to Quote" button.
 
@@ -54,12 +50,16 @@ An Australian corporate gifting e-commerce platform built with **React 19**, **T
 
 ---
 
-## 📱 Responsive Design Standards
+## 📱 Mobile-First Responsive Standards
 
-- **Mobile (< 640px)**: Clean single-column stacked product cards, horizontally scrollable top navigation, touch-friendly steppers, and full-width forms.
-- **Tablet (640px - 900px)**: 2-column product catalog and responsive quote layout.
-- **Desktop (1024px+)**: 4-column product grid, 2-column product detail view, and split-screen quote review.
-- **Balanced Controls**: Proportional button paddings and steppers with zero oversized elements.
+- **Mobile Viewports (< 640px)**:
+  - Header displays Hamburger on the left, Logo centered, and Quote icon on the right.
+  - Slide-in drawer for quick navigation with smooth touch backdrop.
+  - Infinite smooth ticker scroll across the top announcement bar without stutter.
+  - Product cards stack cleanly with vertical button layout to prevent text clipping.
+  - Quote items stack cleanly into image header, stepper row, and full-width input fields.
+- **Tablet (640px – 860px)**: Fluid 2-column catalog grid with balanced margins.
+- **Desktop (1024px+)**: Full 4-column product grid and split quotation workbench.
 
 ---
 
