@@ -345,28 +345,34 @@ export const RFQPage: React.FC<RFQPageProps> = ({ onNavigate }) => {
 
         {/* Confirmation Modal */}
         {submittedModal && (
-          <div style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(15, 23, 42, 0.7)',
-            backdropFilter: 'blur(4px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 100,
-            padding: '1rem'
-          }}>
-            <div style={{
-              background: 'white',
-              borderRadius: '14px',
-              padding: '1.75rem 1.25rem',
-              maxWidth: '440px',
-              width: '100%',
-              textAlign: 'center',
-              boxShadow: 'var(--shadow-xl)',
-              border: '1px solid var(--border-subtle)',
-              boxSizing: 'border-box'
-            }}>
+          <div
+            className="modal-overlay-animated"
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(15, 23, 42, 0.7)',
+              backdropFilter: 'blur(4px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 100,
+              padding: '1rem'
+            }}
+          >
+            <div
+              className="modal-content-animated"
+              style={{
+                background: 'white',
+                borderRadius: '14px',
+                padding: '1.75rem 1.25rem',
+                maxWidth: '440px',
+                width: '100%',
+                textAlign: 'center',
+                boxShadow: 'var(--shadow-xl)',
+                border: '1px solid var(--border-subtle)',
+                boxSizing: 'border-box'
+              }}
+            >
               <div style={{
                 width: '50px',
                 height: '50px',

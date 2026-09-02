@@ -72,40 +72,45 @@ export const AppContent: React.FC = () => {
       />
 
       <main style={{ flex: 1 }}>
-        {activePage === 'home' && (
-          <SimpleHome
-            products={PRODUCTS}
-            onNavigate={navigateTo}
-            onSelectProduct={(prodId) => navigateTo('product', prodId)}
-          />
-        )}
+        <div
+          key={activePage === 'product' ? `product-${selectedProductId}` : activePage}
+          className="page-transition-wrapper"
+        >
+          {activePage === 'home' && (
+            <SimpleHome
+              products={PRODUCTS}
+              onNavigate={navigateTo}
+              onSelectProduct={(prodId) => navigateTo('product', prodId)}
+            />
+          )}
 
-        {activePage === 'cat-executive' && (
-          <CategoryView
-            category={executiveCategory}
-            products={PRODUCTS}
-            onSelectProduct={(prodId) => navigateTo('product', prodId)}
-          />
-        )}
+          {activePage === 'cat-executive' && (
+            <CategoryView
+              category={executiveCategory}
+              products={PRODUCTS}
+              onSelectProduct={(prodId) => navigateTo('product', prodId)}
+            />
+          )}
 
-        {activePage === 'cat-tech' && (
-          <CategoryView
-            category={techCategory}
-            products={PRODUCTS}
-            onSelectProduct={(prodId) => navigateTo('product', prodId)}
-          />
-        )}
+          {activePage === 'cat-tech' && (
+            <CategoryView
+              category={techCategory}
+              products={PRODUCTS}
+              onSelectProduct={(prodId) => navigateTo('product', prodId)}
+            />
+          )}
 
-        {activePage === 'product' && (
-          <ProductDetail
-            product={selectedProduct}
-            onNavigate={navigateTo}
-          />
-        )}
+          {activePage === 'product' && (
+            <ProductDetail
+              product={selectedProduct}
+              onNavigate={navigateTo}
+            />
+          )}
 
-        {activePage === 'quote' && (
-          <RFQPage onNavigate={navigateTo} />
-        )}
+          {activePage === 'quote' && (
+            <RFQPage onNavigate={navigateTo} />
+          )}
+        </div>
       </main>
 
       <Footer onNavigate={(page) => navigateTo(page)} />

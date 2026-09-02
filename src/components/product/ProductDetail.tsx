@@ -177,20 +177,23 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onNavigat
               </div>
 
               {addedSuccess && (
-                <div style={{
-                  marginTop: '0.75rem',
-                  padding: '0.6rem 0.75rem',
-                  background: 'var(--color-accent-emerald-light)',
-                  color: 'var(--color-accent-emerald)',
-                  borderRadius: '6px',
-                  fontSize: '0.8rem',
-                  fontWeight: 600,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '0.35rem'
-                }}>
+                <div
+                  className="toast-slide-in"
+                  style={{
+                    marginTop: '0.75rem',
+                    padding: '0.6rem 0.75rem',
+                    background: 'var(--color-accent-emerald-light)',
+                    color: 'var(--color-accent-emerald)',
+                    borderRadius: '6px',
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: '0.35rem'
+                  }}
+                >
                   <span>✓ {quantity}x {product.name} added.</span>
                   <span
                     style={{ textDecoration: 'underline', cursor: 'pointer' }}

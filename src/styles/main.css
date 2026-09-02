@@ -1255,3 +1255,96 @@ button, input, select, textarea {
   gap: 0.75rem;
   font-size: 0.76rem;
 }
+
+/* ===================================================
+   SMOOTH PAGE TRANSITIONS & MICRO-ANIMATIONS
+   =================================================== */
+.page-transition-wrapper {
+  animation: pageFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity, transform;
+}
+
+@keyframes pageFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Modal Smooth Zoom & Fade Animation */
+.modal-overlay-animated {
+  animation: overlayFadeIn 0.25s ease-out forwards;
+}
+
+@keyframes overlayFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.modal-content-animated {
+  animation: modalPopIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalPopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.94) translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Badge Bounce / Pop on Update */
+.rfq-count-pill,
+.rfq-count-badge-mobile {
+  animation: badgePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes badgePop {
+  0% {
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Interactive Button Active Micro-Press */
+.btn:active,
+.btn-rfq-basket:active,
+.btn-mobile-quote-icon:active,
+.btn-add-quote:active,
+.stepper-btn:active {
+  transform: scale(0.97);
+  transition: transform 0.08s ease;
+}
+
+/* Subtle Toast Notification / Success Message Slide In */
+.toast-slide-in {
+  animation: toastSlide 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes toastSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
