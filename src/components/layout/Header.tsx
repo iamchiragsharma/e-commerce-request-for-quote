@@ -4,22 +4,24 @@ import type { ActivePage } from '../../types';
 
 interface HeaderProps {
   activePage: ActivePage;
-  onNavigate: (page: ActivePage, categoryId?: string, productId?: string) => void;
+  onNavigate: (page: ActivePage, productId?: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ activePage, onNavigate }) => {
-  const { totalQuoteUnits, items } = useQuote();
+  const { totalItems } = useQuote();
 
   return (
     <header className="site-header">
       <div className="container header-inner">
+        {/* Left: Brand Logo */}
         <div className="brand-logo" onClick={() => onNavigate('home')} role="button" tabIndex={0}>
           <div className="brand-badge">A</div>
           <div>
-            <span>Artisan</span>Corp <span style={{ color: 'var(--color-brand-accent)', fontSize: '0.8em' }}>B2B</span>
+            <span>Artisan</span>Corp <span style={{ color: 'var(--color-brand-accent)', fontSize: '0.8em' }}>Gifts</span>
           </div>
         </div>
 
+        {/* Middle: Home | Category 1 | Category 2 */}
         <nav>
           <ul className="nav-links">
             <li>
@@ -34,52 +36,35 @@ export const Header: React.FC<HeaderProps> = ({ activePage, onNavigate }) => {
             </li>
             <li>
               <span
-                className={`nav-link ${activePage === 'categories' ? 'active' : ''}`}
-                onClick={() => onNavigate('categories')}
+                className={`nav-link ${activePage === 'cat-executive' ? 'active' : ''}`}
+                onClick={() => onNavigate('cat-executive')}
                 role="button"
                 tabIndex={0}
               >
-                Collections & Gifts
+                Executive Gifts
               </span>
             </li>
             <li>
               <span
-                className="nav-link"
-                onClick={() => {
-                  if (activePage !== 'home') {
-                    onNavigate('home');
-                    setTimeout(() => {
-                      document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 100);
-                  } else {
-                    document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }}
+                className={`nav-link ${activePage === 'cat-tech' ? 'active' : ''}`}
+                onClick={() => onNavigate('cat-tech')}
                 role="button"
                 tabIndex={0}
               >
-                How RFQ Works
-              </span>
-            </li>
-            <li>
-              <span
-                className={`nav-link ${activePage === 'rfq' ? 'active' : ''}`}
-                onClick={() => onNavigate('rfq')}
-                role="button"
-                tabIndex={0}
-              >
-                Quote Basket
+                Employee Tech
               </span>
             </li>
           </ul>
         </nav>
 
+        {/* Right: Quote Icon & Quote Button */}
         <div className="header-actions">
           <button
             className="btn-rfq-basket"
-            onClick={() => onNavigate('rfq')}
-            aria-label="View Quote Request Basket"
+            onClick={() => onNavigate('quote')}
+            aria-label="View Quote Request"
           >
+            {/* Quote Icon */}
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
               <polyline points="14 2 14 8 20 8"></polyline>
@@ -87,10 +72,10 @@ export const Header: React.FC<HeaderProps> = ({ activePage, onNavigate }) => {
               <line x1="16" y1="17" x2="8" y2="17"></line>
               <polyline points="10 9 9 9 8 9"></polyline>
             </svg>
-            <span>Quote Basket</span>
-            {items.length > 0 && (
-              <span className="rfq-count-pill" title={`${totalQuoteUnits} total units in RFQ`}>
-                {items.length}
+            <span>Quote</span>
+            {totalItems > 0 && (
+              <span className="rfq-count-pill" title={`${totalItems} total items in quote`}>
+                {totalItems}
               </span>
             )}
           </button>

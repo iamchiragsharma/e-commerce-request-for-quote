@@ -2,12 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { QuoteProvider } from './context/QuoteContext';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
-import { HeroSection } from './components/home/HeroSection';
-import { ValueProps } from './components/home/ValueProps';
-import { CategoryGrid } from './components/home/CategoryGrid';
-import { FeaturedGifts } from './components/home/FeaturedGifts';
-import { HowItWorks } from './components/home/HowItWorks';
-import { Testimonials } from './components/home/Testimonials';
+import { SimpleHome } from './components/home/SimpleHome';
 import { CategoryView } from './components/category/CategoryView';
 import { ProductDetail } from './components/product/ProductDetail';
 import { RFQPage } from './components/rfq/RFQPage';
@@ -17,10 +12,9 @@ import './styles/main.css';
 
 export const AppContent: React.FC = () => {
   const [activePage, setActivePage] = useState<ActivePage>('home');
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>(undefined);
-  const [selectedProductId, setSelectedProductId] = useState<string>('prod-1');
+  const [selectedProductId, setSelectedProductId] = useState<string>('prod-ex-1');
 
-  // Handle URL hash changes for easy browser navigation
+  // Sync with URL hash for browser back/forward and direct refresh
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash.replace('#', '');
@@ -30,14 +24,12 @@ export const AppContent: React.FC = () => {
           setSelectedProductId(pId);
           setActivePage('product');
         }
-      } else if (hash.startsWith('category/')) {
-        const cId = hash.split('/')[1];
-        setSelectedCategoryId(cId);
-        setActivePage('categories');
-      } else if (hash === 'categories') {
-        setActivePage('categories');
-      } else if (hash === 'rfq') {
-        setActivePage('rfq');
+      } else if (hash === 'executive-gifts' || hash === 'cat-executive') {
+        setActivePage('cat-executive');
+      } else if (hash === 'employee-tech' || hash === 'cat-tech') {
+        setActivePage('cat-tech');
+      } else if (hash === 'quote' || hash === 'rfq') {
+        setActivePage('quote');
       } else {
         setActivePage('home');
       }
@@ -48,21 +40,19 @@ export const AppContent: React.FC = () => {
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
-  const navigateTo = (page: ActivePage, categoryId?: string, productId?: string) => {
+  const navigateTo = (page: ActivePage, productId?: string) => {
     setActivePage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     if (productId) {
       setSelectedProductId(productId);
       window.location.hash = `product/${productId}`;
-    } else if (categoryId) {
-      setSelectedCategoryId(categoryId);
-      window.location.hash = `category/${categoryId}`;
-    } else if (page === 'categories') {
-      setSelectedCategoryId(undefined);
-      window.location.hash = 'categories';
-    } else if (page === 'rfq') {
-      window.location.hash = 'rfq';
+    } else if (page === 'cat-executive') {
+      window.location.hash = 'executive-gifts';
+    } else if (page === 'cat-tech') {
+      window.location.hash = 'employee-tech';
+    } else if (page === 'quote') {
+      window.location.hash = 'quote';
     } else {
       window.location.hash = 'home';
     }
@@ -71,43 +61,38 @@ export const AppContent: React.FC = () => {
   const selectedProduct: Product =
     PRODUCTS.find((p) => p.id === selectedProductId) || PRODUCTS[0];
 
-  const featuredProducts = PRODUCTS.filter((p) => p.isFeatured);
+  const executiveCategory = CATEGORIES[0];
+  const techCategory = CATEGORIES[1];
 
   return (
-    <div className="site-wrapper">
+    <div className="site-wrapper" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Header
         activePage={activePage}
         onNavigate={navigateTo}
       />
 
-      <main>
+      <main style={{ flex: 1 }}>
         {activePage === 'home' && (
-          <>
-            <HeroSection
-              featuredProduct={PRODUCTS[0]}
-              onNavigate={navigateTo}
-            />
-            <ValueProps />
-            <CategoryGrid
-              onSelectCategory={(catId) => navigateTo('categories', catId)}
-              onNavigate={navigateTo}
-            />
-            <FeaturedGifts
-              products={featuredProducts}
-              onSelectProduct={(prodId) => navigateTo('product', undefined, prodId)}
-            />
-            <HowItWorks onNavigate={navigateTo} />
-            <Testimonials />
-          </>
+          <SimpleHome
+            products={PRODUCTS}
+            onNavigate={navigateTo}
+            onSelectProduct={(prodId) => navigateTo('product', prodId)}
+          />
         )}
 
-        {activePage === 'categories' && (
+        {activePage === 'cat-executive' && (
           <CategoryView
-            categories={CATEGORIES}
+            category={executiveCategory}
             products={PRODUCTS}
-            selectedCategoryId={selectedCategoryId}
-            onSelectCategory={(catId) => setSelectedCategoryId(catId)}
-            onSelectProduct={(prodId) => navigateTo('product', undefined, prodId)}
+            onSelectProduct={(prodId) => navigateTo('product', prodId)}
+          />
+        )}
+
+        {activePage === 'cat-tech' && (
+          <CategoryView
+            category={techCategory}
+            products={PRODUCTS}
+            onSelectProduct={(prodId) => navigateTo('product', prodId)}
           />
         )}
 
@@ -118,12 +103,12 @@ export const AppContent: React.FC = () => {
           />
         )}
 
-        {activePage === 'rfq' && (
+        {activePage === 'quote' && (
           <RFQPage onNavigate={navigateTo} />
         )}
       </main>
 
-      <Footer onNavigate={navigateTo} />
+      <Footer onNavigate={(page) => navigateTo(page)} />
     </div>
   );
 };

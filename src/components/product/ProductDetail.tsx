@@ -1,360 +1,291 @@
 import React, { useState } from 'react';
-import type { Product, CustomizationMethod, ActivePage } from '../../types';
+import type { Product, ActivePage, ProductReview } from '../../types';
 import { useQuote } from '../../context/QuoteContext';
 
 interface ProductDetailProps {
   product: Product;
-  onNavigate: (page: ActivePage, categoryId?: string) => void;
+  onNavigate: (page: ActivePage) => void;
 }
 
 export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onNavigate }) => {
-  const { addToQuote, calculateUnitPrice, items } = useQuote();
-
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [quantity, setQuantity] = useState(product.minOrderQty);
-  const [selectedMethod, setSelectedMethod] = useState<CustomizationMethod>(
-    product.availableCustomizations[0] || 'Laser Engraving'
-  );
-  const [logoPlacement, setLogoPlacement] = useState('Front Center Primary');
-  const [customPackaging, setCustomPackaging] = useState(false);
-  const [brandingNotes, setBrandingNotes] = useState('');
+  const { addToQuote } = useQuote();
+  const [quantity, setQuantity] = useState(1);
   const [addedSuccess, setAddedSuccess] = useState(false);
 
-  const currentUnitPrice = calculateUnitPrice(product, quantity);
-  const packagingCostPerUnit = customPackaging ? 3.5 : 0;
-  const effectiveUnitPrice = currentUnitPrice + packagingCostPerUnit;
-  const totalEstimatedCost = effectiveUnitPrice * quantity;
+  // Simple reviews state so users can add demo reviews if they want
+  const [reviewsList, setReviewsList] = useState<ProductReview[]>(product.reviews);
+  const [newAuthor, setNewAuthor] = useState('');
+  const [newComment, setNewComment] = useState('');
+  const [newRating, setNewRating] = useState(5);
+  const [showReviewForm, setShowReviewForm] = useState(false);
 
-  // Calculate percentage savings compared to base price
-  const baseTotal = product.basePrice * quantity;
-  const savingsAmount = Math.max(0, baseTotal - (currentUnitPrice * quantity));
-  const savingsPercent = Math.round((savingsAmount / baseTotal) * 100);
+  const handleInc = () => setQuantity((q) => q + 1);
+  const handleDec = () => setQuantity((q) => Math.max(1, q - 1));
 
-  const handleQuantityChange = (newVal: number) => {
-    const valid = Math.max(product.minOrderQty, newVal);
-    setQuantity(valid);
-  };
-
-  const handleAddToBasket = () => {
-    addToQuote(
-      product,
-      quantity,
-      [
-        {
-          method: selectedMethod,
-          logoPlacement,
-          notes: brandingNotes.trim() ? brandingNotes : undefined
-        }
-      ],
-      customPackaging,
-      brandingNotes.trim() ? brandingNotes : undefined
-    );
+  const handleAddToQuote = () => {
+    addToQuote(product, quantity);
     setAddedSuccess(true);
-    setTimeout(() => {
-      setAddedSuccess(false);
-    }, 4000);
+    setTimeout(() => setAddedSuccess(false), 3500);
   };
 
-  const basketItemCount = items.find((i) => i.product.id === product.id)?.quantity;
+  const handleAddReview = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newAuthor.trim() || !newComment.trim()) return;
+
+    const newRev: ProductReview = {
+      id: 'rev-' + Date.now(),
+      author: newAuthor.trim(),
+      rating: newRating,
+      comment: newComment.trim(),
+      date: 'Just now'
+    };
+
+    setReviewsList([newRev, ...reviewsList]);
+    setNewAuthor('');
+    setNewComment('');
+    setShowReviewForm(false);
+  };
+
+  const avgRating = (
+    reviewsList.reduce((acc, r) => acc + r.rating, 0) / (reviewsList.length || 1)
+  ).toFixed(1);
 
   return (
     <div className="section-padding" style={{ background: 'white' }}>
       <div className="container">
-        {/* Breadcrumbs */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '2rem' }}>
-          <span style={{ cursor: 'pointer' }} onClick={() => onNavigate('home')}>Home</span> &gt;
-          <span style={{ cursor: 'pointer' }} onClick={() => onNavigate('categories')}>Collections</span> &gt;
-          <span style={{ cursor: 'pointer' }} onClick={() => onNavigate('categories', product.categoryId)}>{product.category}</span> &gt;
-          <strong style={{ color: 'var(--text-primary)' }}>{product.name}</strong>
+        {/* Back Link */}
+        <div style={{ marginBottom: '2rem' }}>
+          <button
+            className="btn btn-secondary btn-sm"
+            onClick={() => onNavigate(product.categoryId)}
+          >
+            ← Back to {product.categoryName}
+          </button>
         </div>
 
-        <div className="product-detail-layout">
-          {/* Left Column: Gallery */}
+        <div className="product-detail-layout" style={{ marginBottom: '4rem' }}>
+          {/* Product Image */}
           <div>
             <img
-              src={product.images[activeImageIndex] || product.images[0]}
+              src={product.image}
               alt={product.name}
               className="gallery-main-img"
+              style={{ maxHeight: '460px', objectFit: 'cover' }}
             />
-            {product.images.length > 1 && (
-              <div className="gallery-thumbs">
-                {product.images.map((imgUrl, idx) => (
-                  <img
-                    key={idx}
-                    src={imgUrl}
-                    alt={`${product.name} thumbnail ${idx + 1}`}
-                    className={`gallery-thumb ${idx === activeImageIndex ? 'active' : ''}`}
-                    onClick={() => setActiveImageIndex(idx)}
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* Value Guarantees for Corporate Buyers */}
-            <div style={{
-              marginTop: '2.5rem',
-              padding: '1.5rem',
-              background: 'var(--bg-page)',
-              borderRadius: '12px',
-              border: '1px solid var(--border-subtle)'
-            }}>
-              <h4 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '0.75rem' }}>
-                Corporate Procurement Guarantees
-              </h4>
-              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                <li>✓ <strong>Pre-Production Digital Proof:</strong> Rendered with your Pantone vector logo within 24 hours.</li>
-                <li>✓ <strong>Tiered Bulk Pricing:</strong> Automatic volume discounts applied on RFQ submission.</li>
-                <li>✓ <strong>Direct Global Kitting:</strong> Individual drop shipping available to remote employees or offices worldwide.</li>
-                <li>✓ <strong>Complimentary Sample:</strong> Available upon approved RFQ for orders of 100+ units.</li>
-              </ul>
-            </div>
           </div>
 
-          {/* Right Column: Product Specs, Customization & RFQ Builder */}
+          {/* Product Info, SKU, Price, Qty, Add to Quote */}
           <div>
-            <div className="detail-category-tag">{product.category}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+              <span className="detail-category-tag" style={{ margin: 0 }}>
+                {product.categoryName}
+              </span>
+              <span style={{
+                background: 'var(--bg-surface-muted)',
+                color: 'var(--text-secondary)',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                padding: '0.2rem 0.5rem',
+                borderRadius: '4px',
+                border: '1px solid var(--border-subtle)'
+              }}>
+                SKU: {product.sku}
+              </span>
+            </div>
+
             <h1 className="detail-title">{product.name}</h1>
-            <p className="detail-tagline">{product.tagline}</p>
 
-            {/* Volume Tiered Pricing Matrix */}
-            <div className="tiered-table-card">
-              <div className="tiered-table-header">
-                <span>Tiered Volume Pricing Schedule</span>
-                <span style={{ fontSize: '0.78rem', color: 'var(--color-brand-accent)', fontWeight: 600 }}>
-                  Live Tier Highlighted
-                </span>
-              </div>
-              <div className="tiered-grid">
-                {product.tieredPricing.map((tier, idx) => {
-                  const isActive =
-                    quantity >= tier.minQty &&
-                    (tier.maxQty === undefined || quantity <= tier.maxQty);
-
-                  return (
-                    <div
-                      key={idx}
-                      className={`tier-box ${isActive ? 'active' : ''}`}
-                      onClick={() => handleQuantityChange(tier.minQty)}
-                      style={{ cursor: 'pointer' }}
-                      title={`Click to set quantity to ${tier.minQty} units`}
-                    >
-                      <div className="tier-qty-label">
-                        {tier.maxQty ? `${tier.minQty}-${tier.maxQty}` : `${tier.minQty}+`} units
-                      </div>
-                      <div className="tier-price-val">${tier.unitPrice}</div>
-                    </div>
-                  );
-                })}
+            {/* Price */}
+            <div style={{ margin: '1.25rem 0', padding: '1rem', background: 'var(--bg-page)', borderRadius: '10px', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>REGULAR PRICE</div>
+              <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+                ${product.price}
+                <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 500 }}> /unit</span>
               </div>
             </div>
 
-            {/* Customization Options */}
-            <div className="customization-section">
-              <label className="option-group-label">
-                1. Select Custom Branding Method:
-              </label>
-              <div className="branding-methods-grid">
-                {product.availableCustomizations.map((method) => (
-                  <button
-                    key={method}
-                    className={`method-pill ${selectedMethod === method ? 'selected' : ''}`}
-                    onClick={() => setSelectedMethod(method)}
-                  >
-                    {method}
-                  </button>
-                ))}
-              </div>
-
-              <div className="form-row" style={{ marginTop: '1rem' }}>
-                <div>
-                  <label className="form-label" style={{ fontSize: '0.8rem' }}>
-                    Logo Placement
-                  </label>
-                  <select
-                    className="form-select"
-                    value={logoPlacement}
-                    onChange={(e) => setLogoPlacement(e.target.value)}
-                  >
-                    <option value="Front Center Primary">Front Center Primary</option>
-                    <option value="Subdued Corner / Flank">Subdued Corner / Flank</option>
-                    <option value="Pen Barrel / Metal Trim">Laser Barrel / Trim</option>
-                    <option value="Custom Packaging Lid Only">Gift Box Lid Only</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="form-label" style={{ fontSize: '0.8rem' }}>
-                    Turnaround & Lead Time
-                  </label>
-                  <div style={{
-                    padding: '0.75rem 1rem',
-                    background: 'var(--bg-page)',
-                    border: '1px solid var(--border-medium)',
-                    borderRadius: '8px',
-                    fontSize: '0.9rem',
-                    fontWeight: 600,
-                    color: 'var(--text-primary)'
-                  }}>
-                    ⚡ {product.leadTimeDays} Business Days
-                  </div>
-                </div>
-              </div>
-
-              {/* Packaging Add-on */}
-              <div style={{ marginTop: '1rem' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', cursor: 'pointer', fontSize: '0.9rem' }}>
-                  <input
-                    type="checkbox"
-                    checked={customPackaging}
-                    onChange={(e) => setCustomPackaging(e.target.checked)}
-                  />
-                  <span>
-                    <strong>Add Bespoke Magnetic Gift Box & Custom Foil Ribbon</strong> (+ $3.50/unit)
-                  </span>
-                </label>
-              </div>
-
-              {/* Branding Instructions / Notes */}
-              <div style={{ marginTop: '1rem' }}>
-                <label className="form-label" style={{ fontSize: '0.8rem' }}>
-                  Branding Notes or Pantone PMS Code (Optional):
-                </label>
-                <input
-                  type="text"
-                  className="form-input"
-                  placeholder="e.g. PMS 286 C navy logo, white box sleeve"
-                  value={brandingNotes}
-                  onChange={(e) => setBrandingNotes(e.target.value)}
-                />
-              </div>
+            {/* Description */}
+            <div style={{ marginBottom: '2rem' }}>
+              <h4 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '0.5rem' }}>Description:</h4>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                {product.description}
+              </p>
             </div>
 
-            {/* Quantity Stepper & Add to RFQ Action Panel */}
+            {/* Quantity Selector & Add to Quote */}
             <div className="qty-cta-panel">
-              <div className="qty-stepper-row">
-                <div>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
-                    Order Quantity (MOQ: {product.minOrderQty})
-                  </div>
+              <div style={{ marginBottom: '1.25rem' }}>
+                <div style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.5rem' }}>Select Quantity:</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                   <div className="stepper-control">
-                    <button
-                      className="stepper-btn"
-                      onClick={() => handleQuantityChange(quantity - 10)}
-                    >
-                      -
-                    </button>
+                    <button className="stepper-btn" onClick={handleDec} aria-label="Decrease quantity">-</button>
                     <input
                       type="number"
                       className="stepper-input"
                       value={quantity}
-                      min={product.minOrderQty}
-                      onChange={(e) => handleQuantityChange(parseInt(e.target.value) || product.minOrderQty)}
+                      min={1}
+                      onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
                     />
-                    <button
-                      className="stepper-btn"
-                      onClick={() => handleQuantityChange(quantity + 10)}
-                    >
-                      +
-                    </button>
+                    <button className="stepper-btn" onClick={handleInc} aria-label="Increase quantity">+</button>
                   </div>
-                </div>
-
-                <div className="live-estimate-text">
-                  <div>
-                    Unit Quote: <strong>${effectiveUnitPrice.toFixed(2)}</strong> /unit
+                  <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                    Total: <strong>${(product.price * quantity).toLocaleString()}</strong>
                   </div>
-                  <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-                    Total Estimated: <strong>${totalEstimatedCost.toLocaleString()}</strong> ({quantity} units)
-                  </div>
-                  {savingsAmount > 0 && (
-                    <div style={{ fontSize: '0.75rem', color: 'var(--color-accent-emerald)', fontWeight: 700 }}>
-                      ⚡ Volume discount saves ~${savingsAmount.toLocaleString()} ({savingsPercent}%)
-                    </div>
-                  )}
                 </div>
               </div>
 
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                 <button
                   className="btn btn-primary btn-lg"
-                  onClick={handleAddToBasket}
+                  onClick={handleAddToQuote}
                   style={{ flex: 1 }}
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
                     <line x1="16" y1="13" x2="8" y2="13"></line>
                     <line x1="16" y1="17" x2="8" y2="17"></line>
                   </svg>
-                  {addedSuccess ? '✓ Added to RFQ Basket!' : `Add ${quantity} Units to Quote Basket`}
+                  {addedSuccess ? `✓ Added ${quantity} to Quote!` : `Add to Quote`}
                 </button>
 
                 <button
                   className="btn btn-secondary btn-lg"
-                  onClick={() => onNavigate('rfq')}
+                  onClick={() => onNavigate('quote')}
                 >
-                  Go to Quote Basket
+                  View Quote
                 </button>
               </div>
 
               {addedSuccess && (
                 <div style={{
                   marginTop: '1rem',
-                  padding: '0.75rem',
+                  padding: '0.75rem 1rem',
                   background: 'var(--color-accent-emerald-light)',
                   color: 'var(--color-accent-emerald)',
                   borderRadius: '8px',
-                  fontSize: '0.85rem',
+                  fontSize: '0.88rem',
                   fontWeight: 600,
                   display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
                 }}>
-                  <span>✓</span>
-                  Successfully added {quantity} units to your RFQ basket.
+                  <span>✓ {quantity}x {product.name} added to your quote.</span>
                   <span
-                    style={{ textDecoration: 'underline', cursor: 'pointer', marginLeft: 'auto' }}
-                    onClick={() => onNavigate('rfq')}
+                    style={{ textDecoration: 'underline', cursor: 'pointer' }}
+                    onClick={() => onNavigate('quote')}
                   >
-                    View & Submit RFQ →
+                    Open Quote Page →
                   </span>
                 </div>
               )}
-
-              {basketItemCount && !addedSuccess && (
-                <div style={{ marginTop: '0.75rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                  Note: You currently have {basketItemCount} units of this item in your Quote Basket.
-                </div>
-              )}
             </div>
+          </div>
+        </div>
 
-            {/* Technical Specifications */}
-            <div style={{ marginTop: '2.5rem' }}>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '0.5rem' }}>
-                Item Specifications & Details
+        {/* Reviews Section */}
+        <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '3rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+            <div>
+              <h3 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '0.25rem' }}>
+                Customer Reviews
               </h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.25rem' }}>
-                {product.description}
-              </p>
-
-              <h4 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '0.5rem' }}>Key Features:</h4>
-              <ul style={{ paddingLeft: '1.25rem', marginBottom: '1.5rem', fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
-                {product.features.map((f, idx) => (
-                  <li key={idx} style={{ marginBottom: '0.35rem' }}>{f}</li>
-                ))}
-              </ul>
-
-              <table className="specs-table">
-                <tbody>
-                  {Object.entries(product.specs).map(([key, val]) => (
-                    <tr key={key}>
-                      <td>{key}</td>
-                      <td>{val}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ color: '#F59E0B', fontSize: '1.2rem' }}>★★★★★</span>
+                <span style={{ fontWeight: 700 }}>{avgRating} out of 5</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>({reviewsList.length} reviews)</span>
+              </div>
             </div>
+
+            <button
+              className="btn btn-secondary btn-sm"
+              onClick={() => setShowReviewForm(!showReviewForm)}
+            >
+              {showReviewForm ? 'Cancel Review' : '+ Write a Review'}
+            </button>
+          </div>
+
+          {/* Simple Write Review Form */}
+          {showReviewForm && (
+            <form
+              onSubmit={handleAddReview}
+              style={{
+                background: 'var(--bg-page)',
+                padding: '1.5rem',
+                borderRadius: '12px',
+                border: '1px solid var(--border-subtle)',
+                marginBottom: '2.5rem',
+                maxWidth: '600px'
+              }}
+            >
+              <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>Share Your Experience</h4>
+              <div className="form-group">
+                <label className="form-label">Your Name or Organization</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="e.g. Alex Henderson"
+                  value={newAuthor}
+                  onChange={(e) => setNewAuthor(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Rating</label>
+                <select
+                  className="form-select"
+                  value={newRating}
+                  onChange={(e) => setNewRating(Number(e.target.value))}
+                >
+                  <option value={5}>★★★★★ (5 Stars - Excellent)</option>
+                  <option value={4}>★★★★☆ (4 Stars - Very Good)</option>
+                  <option value={3}>★★★☆☆ (3 Stars - Good)</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Review Comment</label>
+                <textarea
+                  className="form-textarea"
+                  rows={3}
+                  placeholder="How was the product quality and packaging?"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  required
+                />
+              </div>
+
+              <button type="submit" className="btn btn-primary btn-sm">Submit Review</button>
+            </form>
+          )}
+
+          {/* Reviews List */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+            {reviewsList.map((rev) => (
+              <div
+                key={rev.id}
+                style={{
+                  background: 'var(--bg-page)',
+                  padding: '1.5rem',
+                  borderRadius: '12px',
+                  border: '1px solid var(--border-subtle)'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                  <span style={{ color: '#F59E0B', fontSize: '1rem' }}>
+                    {'★'.repeat(rev.rating)}{'☆'.repeat(5 - rev.rating)}
+                  </span>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{rev.date}</span>
+                </div>
+                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1rem', fontStyle: 'italic' }}>
+                  "{rev.comment}"
+                </p>
+                <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+                  {rev.author}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
